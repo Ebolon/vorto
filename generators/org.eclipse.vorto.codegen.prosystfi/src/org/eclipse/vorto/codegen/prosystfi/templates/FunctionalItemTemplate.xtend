@@ -23,8 +23,8 @@ import org.eclipse.vorto.core.api.model.datatype.PrimitiveType
 import org.eclipse.vorto.core.api.model.datatype.Property
 import org.eclipse.vorto.core.api.model.functionblock.FunctionBlock
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel
-import org.eclipse.vorto.core.api.model.functionblock.ReturnObjectType
-import org.eclipse.vorto.core.api.model.functionblock.ReturnPrimitiveType
+import org.eclipse.vorto.core.api.model.datatype.ObjectPropertyType
+import org.eclipse.vorto.core.api.model.datatype.PrimitivePropertyType
 
 class FunctionalItemTemplate implements ITemplate<FunctionblockModel>{
 	
@@ -135,15 +135,15 @@ public interface «fbm.name.toFirstUpper» extends FunctionalItem {
 		«IF operation.returnType == null»
 			void «operation.name»();
 		«ELSE»
-			«IF operation.returnType instanceof ReturnObjectType»
-				«var type = (operation.returnType as ReturnObjectType).returnType»
+			«IF operation.returnType.type instanceof ObjectPropertyType»
+				«var type = (operation.returnType.type as ObjectPropertyType).type»
 				«IF type instanceof Entity»
 					«(type as Entity).name» «operation.name»();
 				«ELSEIF type instanceof Enum»
 					«(type as Enum).name» «operation.name»();
 				«ENDIF»
-			«ELSEIF operation.returnType instanceof ReturnPrimitiveType»
-					«var PrimitiveType type = (operation.returnType as ReturnPrimitiveType).returnType»
+			«ELSEIF operation.returnType.type instanceof PrimitivePropertyType»
+					«var PrimitiveType type = (operation.returnType.type as PrimitivePropertyType).type»
 					«type.getName» «operation.name»();
 			«ENDIF»
 		«ENDIF»

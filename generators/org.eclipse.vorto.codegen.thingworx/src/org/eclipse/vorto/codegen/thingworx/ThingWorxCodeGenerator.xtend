@@ -16,8 +16,6 @@ import org.eclipse.vorto.core.api.model.datatype.PrimitivePropertyType
 import org.eclipse.vorto.core.api.model.datatype.Property
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel
 import org.eclipse.vorto.core.api.model.functionblock.Operation
-import org.eclipse.vorto.core.api.model.functionblock.PrimitiveParam
-import org.eclipse.vorto.core.api.model.functionblock.ReturnPrimitiveType
 import org.eclipse.vorto.core.api.model.functionblock.ReturnType
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
 
@@ -197,10 +195,10 @@ class ThingWorxCodeGenerator implements IVortoCodeGenerator {
 				  g.writeArrayFieldStart("parameterDefinitions") //Start of parameter definitions
 				  for (currentParam : currentService.params) {
 					//For this version, we are not supporting complex property types
-					if (currentParam instanceof PrimitiveParam) {
+					if (currentParam.type instanceof PrimitivePropertyType) {
 					  g.writeStartObject //Start of current parameter
 					    g.writeStringField("name", currentParam.name)
-						var paramType = (currentParam as PrimitiveParam).type.literal
+						var paramType = (currentParam.type as PrimitivePropertyType).type.literal
 						g.writeStringField("baseType", getThingWorxDataType(paramType))
 						g.writeStringField("description", "")
 					  g.writeEndObject // End of current parameterDefinition
@@ -244,10 +242,10 @@ class ThingWorxCodeGenerator implements IVortoCodeGenerator {
 		}
 
 		protected def String getResultBaseType(Operation operation){
-			if (operation.returnType != null && operation.returnType instanceof ReturnPrimitiveType){
+			if (operation.returnType != null && operation.returnType.type instanceof PrimitivePropertyType){
 				if (operation.returnType.multiplicity == false){
 					var ReturnType primitiveType = operation.returnType
-					var typeName = (primitiveType as ReturnPrimitiveType).returnType.literal
+					var typeName = (primitiveType.type as PrimitivePropertyType).type.literal
 					return getThingWorxDataType(typeName)
 				} else {
 					return "COMPLEX_TYPE"	

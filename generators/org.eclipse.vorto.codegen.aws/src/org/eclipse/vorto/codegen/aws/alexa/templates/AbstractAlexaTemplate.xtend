@@ -18,9 +18,9 @@ import org.eclipse.vorto.codegen.api.IFileTemplate
 import org.eclipse.vorto.core.api.model.datatype.Enum
 import org.eclipse.vorto.core.api.model.datatype.PrimitiveType
 import org.eclipse.vorto.core.api.model.functionblock.Param
-import org.eclipse.vorto.core.api.model.functionblock.PrimitiveParam
-import org.eclipse.vorto.core.api.model.functionblock.RefParam
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
+import org.eclipse.vorto.core.api.model.datatype.PrimitivePropertyType
+import org.eclipse.vorto.core.api.model.datatype.ObjectPropertyType
 
 abstract class AbstractAlexaTemplate implements IFileTemplate<InformationModel> {
 		
@@ -31,8 +31,8 @@ abstract class AbstractAlexaTemplate implements IFileTemplate<InformationModel> 
 	}
 		
 	protected def boolean isAlexaSupportedParamType(Param param) {
-		if (param instanceof PrimitiveParam) {
-			var primitiveType = (param as PrimitiveParam).type;
+		if (param.type instanceof PrimitivePropertyType) {
+			var primitiveType = (param.type as PrimitivePropertyType).type;
 			if (primitiveType == PrimitiveType.INT || 
 				primitiveType == PrimitiveType.DATETIME ||
 				primitiveType == PrimitiveType.LONG) {
@@ -40,7 +40,7 @@ abstract class AbstractAlexaTemplate implements IFileTemplate<InformationModel> 
 				} else {
 					return false;
 				}
-		} else if (param instanceof RefParam && (param as RefParam).type instanceof Enum ) {
+		} else if (param.type instanceof Enum ) {
 			return true;
 		} else {
 			return false;
@@ -48,15 +48,16 @@ abstract class AbstractAlexaTemplate implements IFileTemplate<InformationModel> 
 	}
 	
 	protected def String mapToAlexaSupportedType(Param param) {
-		if (param instanceof PrimitiveParam) {
-			var primitiveType = (param as PrimitiveParam).type;
+		if (param.type instanceof PrimitivePropertyType) {
+			var primitiveType = (param.type as PrimitivePropertyType).type;
 			if (primitiveType == PrimitiveType.INT || primitiveType == PrimitiveType.LONG) {
 				return "AMAZON.NUMBER";
 			} else if (primitiveType == PrimitiveType.DATETIME) {
 				return "AMAZON.DATE";
 			}
-		} else if(param instanceof RefParam  && (param as RefParam).type instanceof Enum) {
-			return (param as RefParam).type.name
+		} else if(param.type instanceof Enum) {
+			var enumType = (param.type as Enum);
+			return enumType.name
 		}
 		
 		return null;

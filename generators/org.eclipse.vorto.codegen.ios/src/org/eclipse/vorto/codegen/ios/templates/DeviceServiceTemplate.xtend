@@ -16,9 +16,9 @@ package org.eclipse.vorto.codegen.ios.templates
 
 import org.eclipse.vorto.codegen.api.IFileTemplate
 import org.eclipse.vorto.codegen.api.InvocationContext
-import org.eclipse.vorto.core.api.model.functionblock.ReturnObjectType
-import org.eclipse.vorto.core.api.model.functionblock.ReturnPrimitiveType
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
+import org.eclipse.vorto.core.api.model.datatype.ObjectPropertyType
+import org.eclipse.vorto.core.api.model.datatype.PrimitivePropertyType
 
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
@@ -93,15 +93,15 @@ class «context.name»Device {
     
     «FOR fbProperty : context.properties»
     	«FOR operation : fbProperty.type.functionblock.operations»
-    	«IF operation.returnType != null && operation.returnType instanceof ReturnObjectType»
-    	class func «operation.name»(value : NSData) -> «(operation.returnType as ReturnObjectType).returnType.name» {
-    		var result = «(operation.returnType as ReturnObjectType).returnType.name»()
+    	«IF operation.returnType != null && operation.returnType.type instanceof ObjectPropertyType»
+    	class func «operation.name»(value : NSData) -> «(operation.returnType.type as ObjectPropertyType).getType().name» {
+    		var result = «(operation.returnType.type as ObjectPropertyType).getType().name»()
     		//TODO convert and map value to response type
     		return result
     	}
     	«ENDIF»
-    	«IF operation.returnType != null && operation.returnType instanceof ReturnPrimitiveType»
-    	class func «operation.name»(value : NSData) -> «MappingUtils.mapSimpleDatatype((operation.returnType as ReturnPrimitiveType).returnType)» {
+    	«IF operation.returnType != null && operation.returnType.type instanceof PrimitivePropertyType»
+    	class func «operation.name»(value : NSData) -> «MappingUtils.mapSimpleDatatype((operation.returnType.type as PrimitivePropertyType).type)» {
     		//TODO convert and map value to response type
     		return result
     	}

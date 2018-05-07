@@ -22,8 +22,8 @@ import org.eclipse.vorto.core.api.model.datatype.Property
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel
 import org.eclipse.vorto.core.api.model.functionblock.Operation
 import org.eclipse.vorto.core.api.model.functionblock.Param
-import org.eclipse.vorto.core.api.model.functionblock.ReturnObjectType
-import org.eclipse.vorto.core.api.model.functionblock.ReturnPrimitiveType
+import org.eclipse.vorto.core.api.model.datatype.ObjectPropertyType
+import org.eclipse.vorto.core.api.model.datatype.PrimitivePropertyType
 
 class JavaFunctionblockInterfaceTemplate implements ITemplate<FunctionblockModel>{
 	
@@ -91,12 +91,12 @@ class JavaFunctionblockInterfaceTemplate implements ITemplate<FunctionblockModel
 				/**
 				* «op.description»
 				*/
-				«IF op.returnType instanceof ReturnObjectType»
-					«var objectType = op.returnType as ReturnObjectType»
-					public «objectType.returnType.name» «op.name»(«getParameterString(op,invocationContext)»);
-				«ELSEIF op.returnType instanceof ReturnPrimitiveType»
-					«var primitiveType = op.returnType as ReturnPrimitiveType»
-					public «primitiveType.returnType.getName» «op.name»(«getParameterString(op,invocationContext)»);
+				«IF op.returnType.type instanceof ObjectPropertyType»
+					«var objectType = op.returnType as ObjectPropertyType»
+					public «objectType.type.name» «op.name»(«getParameterString(op,invocationContext)»);
+				«ELSEIF op.returnType.type instanceof PrimitivePropertyType»
+					«var primitiveType = op.returnType as PrimitivePropertyType»
+					public «primitiveType.type.getName» «op.name»(«getParameterString(op,invocationContext)»);
 				«ELSE»
 					public void «op.name»(«getParameterString(op,invocationContext)»); 
 				«ENDIF»

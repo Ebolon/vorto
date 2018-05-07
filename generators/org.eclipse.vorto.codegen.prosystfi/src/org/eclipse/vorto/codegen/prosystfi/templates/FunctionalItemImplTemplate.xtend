@@ -24,8 +24,6 @@ import org.eclipse.vorto.core.api.model.datatype.PrimitivePropertyType
 import org.eclipse.vorto.core.api.model.datatype.PrimitiveType
 import org.eclipse.vorto.core.api.model.functionblock.FunctionBlock
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel
-import org.eclipse.vorto.core.api.model.functionblock.ReturnObjectType
-import org.eclipse.vorto.core.api.model.functionblock.ReturnPrimitiveType
 import org.eclipse.vorto.codegen.prosystfi.tasks.FunctionalItemImplGeneratorTask
 
 class FunctionalItemImplTemplate implements ITemplate<FunctionblockModel>{
@@ -157,8 +155,8 @@ public class «fbm.name.toFirstUpper»«FunctionalItemImplGeneratorTask.SUFFIX»
 				//Add your application code here.
 			}
 		«ELSE»
-			«IF operation.returnType instanceof ReturnObjectType»
-				«var type = (operation.returnType as ReturnObjectType).returnType»
+			«IF operation.returnType.type instanceof ObjectPropertyType»
+				«var type = (operation.returnType.type as ObjectPropertyType).type»
 				«IF type instanceof Entity»
 					public «(type as Entity).name» «operation.name»() {
 						//Add your application code here.
@@ -170,8 +168,8 @@ public class «fbm.name.toFirstUpper»«FunctionalItemImplGeneratorTask.SUFFIX»
 						return «(type as Enum).name».«((type as Enum).enums.get(0) as EnumLiteral).name.toUpperCase»;
 					}
 				«ENDIF»
-			«ELSEIF operation.returnType instanceof ReturnPrimitiveType»
-					«var PrimitiveType type = (operation.returnType as ReturnPrimitiveType).returnType»
+			«ELSEIF operation.returnType.type instanceof PrimitivePropertyType»
+					«var PrimitiveType type = (operation.returnType.type as PrimitivePropertyType).type»
 					public «type.getName» «operation.name»() {
 						//Add your application code here.
 						«type.getName» value;

@@ -23,7 +23,6 @@ import org.eclipse.vorto.core.api.model.datatype.Property
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel
 import org.eclipse.vorto.core.api.model.functionblock.Operation
 import org.eclipse.vorto.core.api.model.functionblock.Param
-import org.eclipse.vorto.core.api.model.functionblock.ReturnObjectType
 
 class CoAPClientFunctionblockInterfaceTemplate implements ITemplate<FunctionblockModel>{
 	
@@ -92,7 +91,7 @@ class CoAPClientFunctionblockInterfaceTemplate implements ITemplate<Functionbloc
 				/**
 				* «op.description»
 				*/
-				«IF (op.returnType instanceof ReturnObjectType || op.returnType == null)»
+				«IF (op.returnType.type instanceof ObjectPropertyType || op.returnType == null)»
 					«CoAPUtils.getReturnTypeAsString(op)» «op.name»(«getParameterString(op,invocationContext)»);
 				«ELSE»
 					«CoAPUtils.getReturnTypeAsString(op)» «op.name»(«getParameterString(op,invocationContext)») throws Exception;

@@ -27,8 +27,6 @@ import org.eclipse.vorto.core.api.model.datatype.PrimitiveType
 import org.eclipse.vorto.core.api.model.datatype.Property
 import org.eclipse.vorto.core.api.model.datatype.PropertyAttribute
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel
-import org.eclipse.vorto.core.api.model.functionblock.ReturnObjectType
-import org.eclipse.vorto.core.api.model.functionblock.ReturnPrimitiveType
 import org.eclipse.vorto.core.api.model.functionblock.ReturnType
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModelFactory
@@ -36,7 +34,6 @@ import org.eclipse.vorto.core.api.model.model.ModelFactory
 import org.eclipse.emf.common.util.BasicEList
 import org.eclipse.vorto.core.api.model.functionblock.Operation
 import org.eclipse.vorto.core.api.model.datatype.Entity
-import org.eclipse.vorto.core.api.model.functionblock.RefParam
 import org.eclipse.vorto.core.api.model.datatype.Type
 import org.eclipse.vorto.core.api.model.datatype.Enum
 import org.eclipse.vorto.core.api.model.functionblock.Param
@@ -44,11 +41,11 @@ import org.eclipse.emf.common.util.EList
 import org.eclipse.vorto.core.api.model.functionblock.FunctionBlock
 
 public class Utils {
-	def static String getReturnType(ReturnType type) {
-		if (type instanceof ReturnPrimitiveType) {
-			return (type as ReturnPrimitiveType).returnType.getName();
-		} else if (type instanceof ReturnObjectType) {
-			return (type as ReturnObjectType).returnType.name
+	def static String getReturnType(ReturnType returnType) {
+		if (returnType.type instanceof PrimitivePropertyType) {
+			return (returnType.type as PrimitivePropertyType).type.getName();
+		} else if (returnType.type instanceof ObjectPropertyType) {
+			return (returnType.type as ObjectPropertyType).type.name
 		}
 	}
 
@@ -240,12 +237,12 @@ public class Utils {
 
 			// Analyze the operation types
 			for (Operation op : fb.getOperations()) {
-				if (op.getReturnType() instanceof ReturnObjectType) {
-					types.addAll(getReferencedTypes((op.getReturnType() as ReturnObjectType).getReturnType()));
+				if (op.getReturnType().type instanceof ObjectPropertyType) {
+					types.addAll(getReferencedTypes((op.getReturnType().type as ObjectPropertyType).type));
 				}
 				for (Param param : op.getParams()) {
-					if (param instanceof RefParam) {
-						types.addAll(getReferencedTypes((param as RefParam).getType()));
+					if (param.type instanceof ObjectPropertyType) {
+						types.addAll(getReferencedTypes((param.type as ObjectPropertyType).getType()));
 					}
 				}
 			}

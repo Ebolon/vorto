@@ -25,8 +25,6 @@ import org.eclipse.vorto.core.api.model.datatype.Enum;
 import org.eclipse.vorto.core.api.model.datatype.ObjectPropertyType;
 import org.eclipse.vorto.core.api.model.datatype.Type;
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel;
-import org.eclipse.vorto.core.api.model.functionblock.RefParam;
-import org.eclipse.vorto.core.api.model.functionblock.ReturnObjectType;
 import org.eclipse.vorto.core.api.model.informationmodel.FunctionblockProperty;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
 
@@ -67,11 +65,7 @@ public class DatatypeGeneratorTask implements ICodeGeneratorTask<InformationMode
 		TreeIterator<EObject> iterator = model.eAllContents();
 		while(iterator.hasNext()) {
 			EObject current = iterator.next();
-			if (current instanceof RefParam) {
-				addTypeAndReferences(((RefParam)current).getType(),allTypes);
-			} else if (current instanceof ReturnObjectType) {
-				addTypeAndReferences(((ReturnObjectType)current).getReturnType(),allTypes);
-			} else if (current instanceof ObjectPropertyType) {
+			if (current instanceof ObjectPropertyType) {
 				addTypeAndReferences(((ObjectPropertyType)current).getType(),allTypes);
 			} 
 		}	

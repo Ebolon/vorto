@@ -31,10 +31,6 @@ import org.eclipse.vorto.core.api.model.functionblock.FunctionBlock
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockPackage
 import org.eclipse.vorto.core.api.model.functionblock.Operation
-import org.eclipse.vorto.core.api.model.functionblock.PrimitiveParam
-import org.eclipse.vorto.core.api.model.functionblock.RefParam
-import org.eclipse.vorto.core.api.model.functionblock.ReturnObjectType
-import org.eclipse.vorto.core.api.model.functionblock.ReturnPrimitiveType
 import org.eclipse.vorto.core.api.model.functionblock.Status
 import org.eclipse.vorto.core.api.model.model.ModelPackage
 import org.eclipse.vorto.editor.datatype.validation.ConstraintValidatorFactory
@@ -42,19 +38,23 @@ import org.eclipse.vorto.editor.datatype.validation.DatatypeSystemMessage
 import org.eclipse.vorto.editor.datatype.validation.PropertyConstraintMappingValidation
 import org.eclipse.vorto.editor.datatype.validation.ValidatorUtils
 import org.eclipse.xtext.validation.Check
+import org.eclipse.vorto.core.api.model.datatype.PrimitivePropertyType
+import org.eclipse.vorto.core.api.model.datatype.PropertyType
+import org.eclipse.vorto.core.api.model.functionblock.ReturnType
+import org.eclipse.vorto.core.api.model.datatype.ObjectPropertyType
 
 /**
  * Custom validation rules. 
- *
+ * 
  * see http://www.eclipse.org/Xtext/documentation.html#validation
  */
 class FunctionblockValidator extends AbstractFunctionblockValidator {
-	
+
 	public val propertyValidator = new PropertyConstraintMappingValidation
-	
+
 	@Inject
 	private TypeHelper helper;
-	
+
 	@Check
 	def checkEntityandEnum(FunctionblockModel model) {
 		var list = getAllTypeFromReferencedFile(model);
@@ -73,7 +73,6 @@ class FunctionblockValidator extends AbstractFunctionblockValidator {
 			if (!set.add(en.name.toLowerCase))
 				error(SystemMessage.ERROR_TYPE_NAME_DUPLICATED, en, ModelPackage.Literals.MODEL__NAME)
 		}
-
 	}
 
 	def List<Type> getAllTypeFromReferencedFile(EObject eObject) {
@@ -83,7 +82,7 @@ class FunctionblockValidator extends AbstractFunctionblockValidator {
 	def HashSet<String> getNonDuplicateLowerCasedNameSet(List<Type> list) {
 		var set = new HashSet<String>();
 		for (e : list) {
-			set.add(e.name.toLowerCase); //ignoring duplicated entities' and enums' name from type file
+			set.add(e.name.toLowerCase); // ignoring duplicated entities' and enums' name from type file
 		}
 		return set
 	}
@@ -123,18 +122,19 @@ class FunctionblockValidator extends AbstractFunctionblockValidator {
 
 	@Check
 	def checkOpNameAgainstEntityName(FunctionblockModel model) {
-		
-		var listEE= getAllTypeFromReferencedFile(model);
-		
+
+		var listEE = getAllTypeFromReferencedFile(model);
+
 		listEE.addAll(model.entities)
 		listEE.addAll(model.enums)
-		
+
 		var set = getNonDuplicateLowerCasedNameSet(listEE)
 		var ops = model.functionblock.operations
-		
-		for(op : ops){
-			if(set.contains(op.name.toLowerCase)){
-				error(SystemMessage.ERROR_OPERATION_SAME_NAME_AS_TYPE, op,FunctionblockPackage.Literals.OPERATION__NAME)
+
+		for (op : ops) {
+			if (set.contains(op.name.toLowerCase)) {
+				error(SystemMessage.ERROR_OPERATION_SAME_NAME_AS_TYPE, op,
+					FunctionblockPackage.Literals.OPERATION__NAME)
 			}
 		}
 	}
@@ -142,49 +142,50 @@ class FunctionblockValidator extends AbstractFunctionblockValidator {
 	@Check
 	def checkVersionPattern(FunctionblockModel functionblock) {
 		if (!functionblock.version.matches("\\d+\\.\\d+\\.\\d+(\\-.+)?")) {
-			error(SystemMessage.ERROR_VERSION_PATTERN, functionblock,
-				ModelPackage.Literals.MODEL__VERSION)
+			error(SystemMessage.ERROR_VERSION_PATTERN, functionblock, ModelPackage.Literals.MODEL__VERSION)
 		}
 	}
 
 	@Check
 	def checkNamespacePattern(FunctionblockModel functionblock) {
 		if (!functionblock.namespace.matches("([a-z0-9]*\\.)*[a-z0-9]*")) {
-			error(SystemMessage.ERROR_NAMESPACE_PATTERN, functionblock,
-				ModelPackage.Literals.MODEL__VERSION)
+			error(SystemMessage.ERROR_NAMESPACE_PATTERN, functionblock, ModelPackage.Literals.MODEL__VERSION)
 		}
 	}
-	
+
 	@Check
 	def checkParametersConstraint(Operation op) {
 		var parameters = op.params;
 		if(parameters.length == 0) return;
 		for (parameter : parameters) {
-			if (parameter instanceof PrimitiveParam) {
-				var primitiveParam = parameter as PrimitiveParam
-				val primitiveType = primitiveParam.type
-				var constraintsList = primitiveParam.constraintRule.constraints
+			if (parameter.type instanceof PrimitivePropertyType) {
+				val primitiveType = parameter.type as PrimitivePropertyType
+				var constraintsList = parameter.constraintRule.constraints
 				for (constraint : constraintsList) {
-					checkForConstraint(primitiveType, constraint, parameter, primitiveParam.type.getName, parameter.multiplicity, FunctionblockPackage.Literals.PRIMITIVE_PARAM__CONSTRAINT_RULE)
+					checkForConstraint(primitiveType.type, constraint, parameter, parameter.getName,
+						parameter.multiplicity, FunctionblockPackage.Literals.PARAM__CONSTRAINT_RULE)
 				}
 			}
 		}
 	}
-	
+
 	@Check
 	def checkReturnTypeConstraint(Operation op) {
-		var returnType = op.returnType
-		if (returnType instanceof ReturnPrimitiveType) {
-			var returnPrimitiveType = returnType as ReturnPrimitiveType
-			val parameterName = returnPrimitiveType.returnType.getName
-			var constraintsList = returnPrimitiveType.constraintRule.constraints
+		var returnType = op.returnType as ReturnType
+		if (returnType.type instanceof PrimitivePropertyType) {
+			val primitivePropertyType = returnType.type as PrimitivePropertyType
+			val primitiveType = primitivePropertyType.type
+			val parameterName = primitiveType.literal
+			var constraintsList = returnType.constraintRule.constraints
 			for (constraint : constraintsList) {
-				checkForConstraint(returnPrimitiveType.returnType, constraint, returnPrimitiveType, parameterName, returnPrimitiveType.multiplicity, FunctionblockPackage.Literals.RETURN_PRIMITIVE_TYPE__CONSTRAINT_RULE)
+				checkForConstraint(primitiveType, constraint, returnType, parameterName, returnType.multiplicity,
+					FunctionblockPackage.Literals.RETURN_TYPE__CONSTRAINT_RULE)
 			}
 		}
-	}		
+	}
 
-	def checkForConstraint(PrimitiveType primitiveType, Constraint constraint, EObject source, String parameterName, boolean isMultiplcity, EStructuralFeature feature) {
+	def checkForConstraint(PrimitiveType primitiveType, Constraint constraint, EObject source, String parameterName,
+		boolean isMultiplcity, EStructuralFeature feature) {
 		if (!isValidConstraintType(primitiveType, constraint)) {
 			error(propertyValidator.errorMessage, source, feature)
 		} else {
@@ -193,13 +194,13 @@ class FunctionblockValidator extends AbstractFunctionblockValidator {
 				error(validator.errorMessage, source, feature)
 			}
 		}
-		if(isMimeConstraint(parameterName, constraint)) {
-			if(!isMultiplcity) {
-				error(DatatypeSystemMessage.ERROR_MIMETYPE_FOR_BYTE, source,feature )
+		if (isMimeConstraint(parameterName, constraint)) {
+			if (!isMultiplcity) {
+				error(DatatypeSystemMessage.ERROR_MIMETYPE_FOR_BYTE, source, feature)
 			}
 		}
-	}		
-	
+	}
+
 	@Check
 	def checkPropsIn(Configuration c) {
 		checkDuplicatedProperty(c.properties)
@@ -224,41 +225,53 @@ class FunctionblockValidator extends AbstractFunctionblockValidator {
 	def checkPropsIn(Entity e) {
 		checkDuplicatedProperty(e.properties)
 	}
-	
+
 	@Check
 	def checkCircularRefInSuperType(FunctionblockModel functionblock) {
-		if (functionblock.superType != null) {
+		if (functionblock.superType !== null) {
 			try {
-				if (ValidatorUtils.hasCircularReference(functionblock, functionblock.superType, FbValidatorUtils.modelToChildrenSupplierFunction)) {
-					error(DatatypeSystemMessage.ERROR_SUPERTYPE_CIRCULAR_REF, functionblock, FunctionblockPackage.Literals.FUNCTIONBLOCK_MODEL__SUPER_TYPE);
-				}	
-			} catch(Exception e) {
+				if (ValidatorUtils.hasCircularReference(functionblock, functionblock.superType,
+					FbValidatorUtils.modelToChildrenSupplierFunction)) {
+					error(DatatypeSystemMessage.ERROR_SUPERTYPE_CIRCULAR_REF, functionblock,
+						FunctionblockPackage.Literals.FUNCTIONBLOCK_MODEL__SUPER_TYPE);
+				}
+			} catch (Exception e) {
 				e.printStackTrace
 			}
 		}
 	}
-	
+
 	@Check
-	def checkRefParamIsImported(RefParam refParam) {
-		val topParent = ValidatorUtils.getParentOfType(refParam, FunctionblockModel) as FunctionblockModel
-		if (topParent != null && !ValidatorUtils.isTypeInReferences(refParam.type, topParent.references)) {
-			error(SystemMessage.ERROR_REF_PARAM_NOT_IMPORTED, refParam, FunctionblockPackage.Literals.REF_PARAM__TYPE);
+	def checkRefParamIsImported(PropertyType propertyType) {
+		if (propertyType instanceof ObjectPropertyType) {
+			val objectPropertyType = propertyType as ObjectPropertyType
+			val topParent = ValidatorUtils.getParentOfType(objectPropertyType, FunctionblockModel) as FunctionblockModel
+			if (topParent !== null &&
+				!ValidatorUtils.isTypeInReferences(objectPropertyType.type, topParent.references)) {
+				error(SystemMessage.ERROR_REF_PARAM_NOT_IMPORTED, objectPropertyType,
+					FunctionblockPackage.Literals.PARAM__TYPE);
+			}
 		}
 	}
-	
+
 	@Check
-	def checkReturnTypeIsImported(ReturnObjectType returnType) {
+	def checkReturnTypeIsImported(ReturnType returnType) {
 		val topParent = ValidatorUtils.getParentOfType(returnType, FunctionblockModel) as FunctionblockModel
-		if (topParent != null && !ValidatorUtils.isTypeInReferences(returnType.returnType, topParent.references)) {
-			error(SystemMessage.ERROR_OBJECT_RETURN_TYPE_NOT_IMPORTED, returnType, FunctionblockPackage.Literals.RETURN_OBJECT_TYPE__RETURN_TYPE);
+		if (returnType.type instanceof ObjectPropertyType) {
+			val objectPropertyType = returnType.type as ObjectPropertyType
+			if (topParent !== null &&
+				!ValidatorUtils.isTypeInReferences(objectPropertyType.type, topParent.references)) {
+				error(SystemMessage.ERROR_OBJECT_RETURN_TYPE_NOT_IMPORTED, returnType,
+					FunctionblockPackage.Literals.RETURN_TYPE__TYPE);
+			}
 		}
 	}
-	
-	def setHelper(TypeHelper helper){
+
+	def setHelper(TypeHelper helper) {
 		this.helper = helper
 	}
-	
-	def getHelper(){
+
+	def getHelper() {
 		this.helper
 	}
 

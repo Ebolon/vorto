@@ -55,7 +55,6 @@ import org.eclipse.vorto.core.api.model.datatype.Property;
 import org.eclipse.vorto.core.api.model.functionblock.FunctionBlock;
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel;
 import org.eclipse.vorto.core.api.model.functionblock.Operation;
-import org.eclipse.vorto.core.api.model.functionblock.ReturnPrimitiveType;
 import org.eclipse.vorto.core.api.model.informationmodel.FunctionblockProperty;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
 
@@ -364,7 +363,7 @@ public class CoAPGenerator implements IVortoCodeGenerator {
 	}
 	
 	private void generateForOperation(Operation op, IGeneratedWriter outputter) {
-		if(op.getReturnType() != null && op.getReturnType() instanceof ReturnPrimitiveType){
+		if(op.getReturnType() != null && op.getReturnType().getType() instanceof PrimitivePropertyType){
 			primTypeWrapperRequired = true;
 			new JavaFBOperationReturnPrimitiveTypeWrapperGeneratorTask(
 				op.getName() + COAP_PRIM_TYPE_WRAPPER_SUFFIX, 

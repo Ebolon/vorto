@@ -20,9 +20,9 @@ import org.eclipse.vorto.core.api.model.datatype.Entity
 import org.eclipse.vorto.core.api.model.datatype.Enum
 import org.eclipse.vorto.core.api.model.functionblock.Operation
 import org.eclipse.vorto.core.api.model.functionblock.Param
-import org.eclipse.vorto.core.api.model.functionblock.ReturnObjectType
-import org.eclipse.vorto.core.api.model.functionblock.ReturnPrimitiveType
 import org.eclipse.vorto.codegen.api.InvocationContext
+import org.eclipse.vorto.core.api.model.datatype.ObjectPropertyType
+import org.eclipse.vorto.core.api.model.datatype.PrimitivePropertyType
 
 class JavaClassMethodTemplate implements ITemplate<Operation>{
 	
@@ -38,27 +38,27 @@ class JavaClassMethodTemplate implements ITemplate<Operation>{
 			* «op.description»
 			*/
 			
-			«IF op.returnType instanceof ReturnObjectType»
-				«var objectType = op.returnType as ReturnObjectType»
-				public «objectType.returnType.name» «op.name»(«getParameterString(op,invocationContext)») {
-					«IF objectType.returnType instanceof Entity»
-						«objectType.returnType.name» result = new «objectType.returnType.name»();
+			«IF op.returnType.type instanceof ObjectPropertyType»
+				«var objectType = op.returnType.type as ObjectPropertyType»
+				public «objectType.type.name» «op.name»(«getParameterString(op,invocationContext)») {
+					«IF objectType.type instanceof Entity»
+						«objectType.type.name» result = new «objectType.type.name»();
 						// Add your code here.
 						
 						return result;
-					«ELSEIF objectType.returnType instanceof Enum»
+					«ELSEIF objectType.type instanceof Enum»
 						// Add your code here.
 						
-						return «objectType.returnType.name».«(objectType.returnType as Enum).enums.get(0).name.toUpperCase»;
+						return «objectType.type.name».«(objectType.type as Enum).enums.get(0).name.toUpperCase»;
 					«ENDIF»
 				}
-			«ELSEIF op.returnType instanceof ReturnPrimitiveType»
-				«var primitiveType = op.returnType as ReturnPrimitiveType»
-				public «primitiveType.returnType.getName» «op.name»(«getParameterString(op,invocationContext)») {
-					«IF ValueMapper.getInitialValue(primitiveType.returnType).equalsIgnoreCase("")» 
-						«primitiveType.returnType.getName» result;
+			«ELSEIF op.returnType.type instanceof PrimitivePropertyType»
+				«var primitiveType = op.returnType.type as PrimitivePropertyType»
+				public «primitiveType.type.getName» «op.name»(«getParameterString(op,invocationContext)») {
+					«IF ValueMapper.getInitialValue(primitiveType.type).equalsIgnoreCase("")» 
+						«primitiveType.type.getName» result;
 					«ELSE»
-						«primitiveType.returnType.getName» result = «ValueMapper.getInitialValue(primitiveType.returnType)»;
+						«primitiveType.type.getName» result = «ValueMapper.getInitialValue(primitiveType.type)»;
 					«ENDIF»
 					// Add your code here.
 					

@@ -22,9 +22,9 @@ import org.eclipse.vorto.codegen.coap.CoAPUtils
 import org.eclipse.vorto.codegen.utils.Utils
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel
 import org.eclipse.vorto.core.api.model.functionblock.Operation
-import org.eclipse.vorto.core.api.model.functionblock.ReturnPrimitiveType
 import org.eclipse.vorto.core.api.model.informationmodel.FunctionblockProperty
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
+import org.eclipse.vorto.core.api.model.datatype.PrimitivePropertyType
 
 class CoAPServerIMRequestHandlerTemplate implements ITemplate<InformationModel> {
 	var String classPackage;
@@ -106,7 +106,7 @@ class CoAPServerIMRequestHandlerTemplate implements ITemplate<InformationModel> 
 														}
 													«ENDIF»
 													«IF (operation.returnType != null)»
-														«IF (operation.returnType instanceof ReturnPrimitiveType)»
+														«IF (operation.returnType.type instanceof PrimitivePropertyType)»
 															final «operation.name.toFirstUpper»«primitiveTypeWrapper_suffix» result = new «operation.name.toFirstUpper»«primitiveTypeWrapper_suffix»();
 															result.setValue(«im.name.toFirstLower».get«instance.name.toFirstUpper»().«operation.name.toFirstLower»(«this.operationParams(operation)»));
 														«ELSE»

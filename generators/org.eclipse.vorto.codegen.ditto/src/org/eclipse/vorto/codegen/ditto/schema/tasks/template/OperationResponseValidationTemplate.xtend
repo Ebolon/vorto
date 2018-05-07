@@ -20,8 +20,8 @@ import org.eclipse.vorto.core.api.model.datatype.Entity
 import org.eclipse.vorto.core.api.model.datatype.Enum
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel
 import org.eclipse.vorto.core.api.model.functionblock.Operation
-import org.eclipse.vorto.core.api.model.functionblock.ReturnObjectType
-import org.eclipse.vorto.core.api.model.functionblock.ReturnPrimitiveType
+import org.eclipse.vorto.core.api.model.datatype.PrimitivePropertyType
+import org.eclipse.vorto.core.api.model.datatype.ObjectPropertyType
 
 class OperationResponseValidationTemplate implements ITemplate<Operation> {
 
@@ -42,21 +42,21 @@ class OperationResponseValidationTemplate implements ITemplate<Operation> {
 				"description": "«operation.description»"«IF operation.returnType !== null»,«ENDIF»
 				«IF operation.returnType !== null»
 					«val returnType = operation.returnType»
-					«IF returnType instanceof ReturnPrimitiveType»
-						«val primitiveReturnType = returnType as ReturnPrimitiveType»
+					«IF returnType.type instanceof PrimitivePropertyType»
+						«val primitiveReturnType = returnType.type as PrimitivePropertyType»
 						«IF returnType.isMultiplicity»
 							"type": "array",
 							"items" : {
-								«primitiveTypeValidationTemplate.getContent(primitiveReturnType.returnType, invocationContext)»
+								«primitiveTypeValidationTemplate.getContent(primitiveReturnType.type, invocationContext)»
 							}
 						«ELSE»
-							«primitiveTypeValidationTemplate.getContent(primitiveReturnType.returnType, invocationContext)»
+							«primitiveTypeValidationTemplate.getContent(primitiveReturnType.type, invocationContext)»
 						«ENDIF»
-					«ELSEIF returnType instanceof ReturnObjectType»
-						«val returnObjectType = returnType as ReturnObjectType»
-						«IF returnObjectType.returnType instanceof Entity»
-							«val entity = returnObjectType.returnType as Entity»
-							«IF returnObjectType.isMultiplicity»
+					«ELSEIF returnType.type instanceof ObjectPropertyType»
+						«val returnObjectType = returnType as ObjectPropertyType»
+						«IF returnObjectType.type instanceof Entity»
+							«val entity = returnObjectType.type as Entity»
+							«IF returnType.isMultiplicity»
 								"type": "array",
 								"items": {
 									"type": "object",
@@ -72,9 +72,9 @@ class OperationResponseValidationTemplate implements ITemplate<Operation> {
 								},
 								«EntityValidationTemplate.calculateRequired(entity.properties)»
 							«ENDIF»
-						«ELSEIF returnObjectType.returnType instanceof Enum»
-							«val enum = returnObjectType.returnType as Enum»
-							«IF returnObjectType.isMultiplicity»
+						«ELSEIF returnObjectType.type instanceof Enum»
+							«val enum = returnObjectType.type as Enum»
+							«IF returnType.isMultiplicity»
 								"type": "array",
 								"items" : {
 									«enumValidationTemplate.getContent(enum, invocationContext)»

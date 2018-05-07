@@ -20,8 +20,8 @@ import org.eclipse.vorto.codegen.ditto.schema.Utils
 import org.eclipse.vorto.core.api.model.datatype.Entity
 import org.eclipse.vorto.core.api.model.datatype.Enum
 import org.eclipse.vorto.core.api.model.functionblock.Param
-import org.eclipse.vorto.core.api.model.functionblock.PrimitiveParam
-import org.eclipse.vorto.core.api.model.functionblock.RefParam
+import org.eclipse.vorto.core.api.model.datatype.PrimitivePropertyType
+import org.eclipse.vorto.core.api.model.datatype.ObjectPropertyType
 
 class OperationSingleParameterValidationTemplate implements ITemplate<Param>{
 		
@@ -40,8 +40,8 @@ class OperationSingleParameterValidationTemplate implements ITemplate<Param>{
 	
 	static def CharSequence handleParam(Param param, InvocationContext invocationContext, boolean includeDescriptions)
 		'''
-		«IF param instanceof PrimitiveParam»
-			«val primitiveParam = param as PrimitiveParam»
+		«IF param.type instanceof PrimitivePropertyType»
+			«val primitiveParam = param as PrimitivePropertyType»
 			«IF param.isMultiplicity»
 				"«param.name»": {
 					«IF includeDescriptions && !param.description.nullOrEmpty»"description": "«param.description»",«ENDIF»
@@ -56,11 +56,11 @@ class OperationSingleParameterValidationTemplate implements ITemplate<Param>{
 					«primitiveTypeValidationTemplate.getContent(primitiveParam.type, invocationContext)»«Utils.getConstraintsContent(param.constraintRule, invocationContext)»
 				}
 			«ENDIF»
-		«ELSEIF param instanceof RefParam»
-			«var refParam = param as RefParam»
+		«ELSEIF param.type instanceof ObjectPropertyType»
+			«var refParam = param as ObjectPropertyType»
 			«IF refParam.type instanceof Entity»
 				«val entity = refParam.type as Entity»
-				«IF refParam.isMultiplicity»
+				«IF param.isMultiplicity»
 					"«param.name»": {
 						«IF includeDescriptions && !param.description.nullOrEmpty»"description": "«param.description»",«ENDIF»
 						"type": "array",
@@ -84,7 +84,7 @@ class OperationSingleParameterValidationTemplate implements ITemplate<Param>{
 				«ENDIF»
 			«ELSEIF refParam.type instanceof Enum»
 				«val enum = refParam.type as Enum»
-				«IF refParam.isMultiplicity»
+				«IF param.isMultiplicity»
 					"«param.name»": {
 						«IF includeDescriptions && !param.description.nullOrEmpty»"description": "«param.description»",«ENDIF»
 						"type": "array",

@@ -20,18 +20,18 @@ import org.eclipse.vorto.core.api.model.datatype.Entity
 import org.eclipse.vorto.core.api.model.datatype.Enum
 import org.eclipse.vorto.core.api.model.datatype.PrimitiveType
 import org.eclipse.vorto.core.api.model.functionblock.Param
-import org.eclipse.vorto.core.api.model.functionblock.PrimitiveParam
-import org.eclipse.vorto.core.api.model.functionblock.RefParam
 import org.eclipse.vorto.codegen.api.InvocationContext
+import org.eclipse.vorto.core.api.model.datatype.PrimitivePropertyType
+import org.eclipse.vorto.core.api.model.datatype.ObjectPropertyType
 
 class JavaClassMethodParameterTemplate implements ITemplate<Param>{
 	
 	override getContent(Param property,InvocationContext invocationContext) {
 		'''
-		«IF property instanceof PrimitiveParam»
-			«ValueMapper.mapSimpleDatatype((property as PrimitiveParam).type as PrimitiveType)» «property.name»
-		«ELSEIF property instanceof RefParam»
-			«var RefParam object = property as RefParam»
+		«IF property.type instanceof PrimitivePropertyType»
+			«ValueMapper.mapSimpleDatatype((property.type as PrimitivePropertyType).type as PrimitiveType)» «property.name»
+		«ELSEIF property.type instanceof ObjectPropertyType»
+			«var ObjectPropertyType object = property.type as ObjectPropertyType»
 			«IF object.type instanceof Entity» 
 				«(object.type as Entity).name.toFirstUpper» «property.name»
 			«ELSEIF object.type instanceof Enum»

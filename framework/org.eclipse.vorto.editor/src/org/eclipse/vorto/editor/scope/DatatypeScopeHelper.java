@@ -38,8 +38,7 @@ import org.eclipse.emf.ecore.EReference;
 import org.eclipse.vorto.core.api.model.datatype.ObjectPropertyType;
 import org.eclipse.vorto.core.api.model.datatype.Type;
 import org.eclipse.vorto.core.api.model.datatype.impl.TypeImpl;
-import org.eclipse.vorto.core.api.model.functionblock.RefParam;
-import org.eclipse.vorto.core.api.model.functionblock.ReturnObjectType;
+import org.eclipse.vorto.core.api.model.functionblock.ReturnType;
 import org.eclipse.xtext.naming.IQualifiedNameConverter;
 import org.eclipse.xtext.resource.EObjectDescription;
 import org.eclipse.xtext.resource.IEObjectDescription;
@@ -65,15 +64,11 @@ public class DatatypeScopeHelper {
 			scope = DatatypeScopeHelper.getObjectPropertyScope(converter,
 					(ObjectPropertyType) context, reference);
 
-		} else if (context instanceof ReturnObjectType) {
-			scope = DatatypeScopeHelper.getReturnObjectTypeScope(converter,
-					(ReturnObjectType) context, reference);
-
-		} else if (context instanceof RefParam) {
-
-			scope = DatatypeScopeHelper.getRefParamTypeScope(converter,
-					(RefParam) context, reference);
-
+		} else if (context instanceof ReturnType) {
+			if(((ReturnType) context).getType() instanceof ObjectPropertyType) {
+			scope = DatatypeScopeHelper.getObjectPropertyScope(converter,
+					(ObjectPropertyType) ((ReturnType) context).getType(), reference);
+			}
 		}
 		return scope;
 	}
@@ -86,33 +81,6 @@ public class DatatypeScopeHelper {
 			return getTypeScope(converter, objectPropertyType.getType(),
 					reference);
 		} catch (Exception e) {
-		} catch (Error e) {
-		}
-
-		return IScope.NULLSCOPE;
-	}
-
-	public static IScope getReturnObjectTypeScope(
-			IQualifiedNameConverter converter,
-			ReturnObjectType returnObjectType, EReference reference) {
-		try {
-			return getTypeScope(converter, returnObjectType.getReturnType(),
-					reference);
-		} catch (Exception e) {
-			e.printStackTrace();
-		} catch (Error e) {
-		}
-
-		return IScope.NULLSCOPE;
-	}
-
-	public static IScope getRefParamTypeScope(
-			IQualifiedNameConverter converter, RefParam refParam,
-			EReference reference) {
-		try {
-			return getTypeScope(converter, refParam.getType(), reference);
-		} catch (Exception e) {
-
 		} catch (Error e) {
 		}
 

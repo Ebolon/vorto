@@ -19,11 +19,9 @@ import org.eclipse.vorto.codegen.api.InvocationContext
 import org.eclipse.vorto.core.api.model.datatype.Property
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel
 import org.eclipse.vorto.core.api.model.functionblock.Param
-import org.eclipse.vorto.core.api.model.functionblock.PrimitiveParam
-import org.eclipse.vorto.core.api.model.functionblock.RefParam
-import org.eclipse.vorto.core.api.model.functionblock.ReturnObjectType
-import org.eclipse.vorto.core.api.model.functionblock.ReturnPrimitiveType
 import org.eclipse.vorto.core.api.model.functionblock.ReturnType
+import org.eclipse.vorto.core.api.model.datatype.PrimitivePropertyType
+import org.eclipse.vorto.core.api.model.datatype.ObjectPropertyType
 
 class ProtobufFBTemplate extends ProtobufTemplate<FunctionblockModel> {
 
@@ -105,11 +103,11 @@ class ProtobufFBTemplate extends ProtobufTemplate<FunctionblockModel> {
 
 	def generateMessagePropertiesFromReturnType(ReturnType returnType) {
 		'''
-			«IF returnType != null && returnType instanceof ReturnPrimitiveType»
-				«IF returnType.multiplicity»repeated «ENDIF»«toProtoPrimitive((returnType as ReturnPrimitiveType).returnType)» value = 1;
+			«IF returnType != null && returnType.type instanceof PrimitivePropertyType»
+				«IF returnType.multiplicity»repeated «ENDIF»«toProtoPrimitive((returnType.type as PrimitivePropertyType).type)» value = 1;
 			«ENDIF»
-			«IF returnType != null && returnType instanceof ReturnObjectType»
-				«IF returnType.multiplicity»repeated «ENDIF»«(returnType as ReturnObjectType).returnType.name» value = 1;
+			«IF returnType != null && returnType.type instanceof ObjectPropertyType»
+				«IF returnType.multiplicity»repeated «ENDIF»«(returnType.type as ObjectPropertyType).type.name» value = 1;
 			«ENDIF»
 		'''
 	}
@@ -128,10 +126,10 @@ class ProtobufFBTemplate extends ProtobufTemplate<FunctionblockModel> {
 	
 	
 	def String type(Param param) {
-		if (param instanceof PrimitiveParam) {
-			return toProtoPrimitive((param as PrimitiveParam).getType);
+		if (param.type instanceof PrimitivePropertyType) {
+			return toProtoPrimitive((param.type as PrimitivePropertyType).getType);
 		} else {
-			return (param as RefParam).getType().name
+			return (param.type as PrimitivePropertyType).getType().getName()
 		}
 	}
 	

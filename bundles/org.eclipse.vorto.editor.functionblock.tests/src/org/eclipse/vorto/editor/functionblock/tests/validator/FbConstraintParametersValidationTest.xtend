@@ -53,8 +53,10 @@ class FbConstraintParametersValidationTest extends AbstractXtextTests {
 		operation.name = "off"
 		operation.description = "Turn off switch"
 		
-		val returnPrimitiveType = FunctionblockFactory.eINSTANCE.createReturnPrimitiveType
-		returnPrimitiveType.returnType = PrimitiveType.STRING
+		val returnPrimitiveType = FunctionblockFactory.eINSTANCE.createReturnType
+		var primi = DatatypeFactory.eINSTANCE.createPrimitivePropertyType();
+		primi.setType(PrimitiveType.STRING);	
+		returnPrimitiveType.type = primi
 		val constraintRule = DatatypeFactory.eINSTANCE.createConstraintRule
 		
 		var constraint1 = DatatypeFactory.eINSTANCE.createConstraint
@@ -77,8 +79,10 @@ class FbConstraintParametersValidationTest extends AbstractXtextTests {
 		operation.name = "off"
 		operation.description = "Turn off switch"
 		
-		val returnPrimitiveType = FunctionblockFactory.eINSTANCE.createReturnPrimitiveType
-		returnPrimitiveType.returnType = PrimitiveType.INT
+		val returnPrimitiveType = FunctionblockFactory.eINSTANCE.createReturnType
+		var primi = DatatypeFactory.eINSTANCE.createPrimitivePropertyType();
+		primi.setType(PrimitiveType.INT);	
+		returnPrimitiveType.type = primi
 		val constraintRule = DatatypeFactory.eINSTANCE.createConstraintRule
 		
 		var invalidTypeConstraint = DatatypeFactory.eINSTANCE.createConstraint
@@ -103,8 +107,10 @@ class FbConstraintParametersValidationTest extends AbstractXtextTests {
 		operation.name = "off"
 		operation.description = "Turn off switch"
 		
-		val returnPrimitiveType = FunctionblockFactory.eINSTANCE.createReturnPrimitiveType
-		returnPrimitiveType.returnType = PrimitiveType.INT
+		val returnPrimitiveType = FunctionblockFactory.eINSTANCE.createReturnType
+		var primi = DatatypeFactory.eINSTANCE.createPrimitivePropertyType();
+		primi.setType(PrimitiveType.INT);
+		returnPrimitiveType.type = primi
 		val constraintRule = DatatypeFactory.eINSTANCE.createConstraintRule
 		
 		var minConstraint = DatatypeFactory.eINSTANCE.createConstraint
@@ -132,8 +138,10 @@ class FbConstraintParametersValidationTest extends AbstractXtextTests {
 		operation.name = "off"
 		operation.description = "Turn off switch"
 		
-		val returnPrimitiveType = FunctionblockFactory.eINSTANCE.createReturnPrimitiveType
-		returnPrimitiveType.returnType = PrimitiveType.STRING
+		val returnPrimitiveType = FunctionblockFactory.eINSTANCE.createReturnType
+		var primi = DatatypeFactory.eINSTANCE.createPrimitivePropertyType();
+		primi.setType(PrimitiveType.STRING);
+		returnPrimitiveType.type = primi
 		val constraintRule = DatatypeFactory.eINSTANCE.createConstraintRule
 		
 		var minConstraint = DatatypeFactory.eINSTANCE.createConstraint
@@ -158,8 +166,10 @@ class FbConstraintParametersValidationTest extends AbstractXtextTests {
 		operation.description = "Turn off switch"
 		
 		
-		val returnPrimitiveType = FunctionblockFactory.eINSTANCE.createReturnPrimitiveType
-		returnPrimitiveType.returnType = PrimitiveType.BYTE
+		val returnPrimitiveType = FunctionblockFactory.eINSTANCE.createReturnType
+		var primi = DatatypeFactory.eINSTANCE.createPrimitivePropertyType();
+		primi.setType(PrimitiveType.BYTE);
+		returnPrimitiveType.type = primi
 		returnPrimitiveType.multiplicity = true;
 		val constraintRule = DatatypeFactory.eINSTANCE.createConstraintRule
 		
@@ -183,8 +193,10 @@ class FbConstraintParametersValidationTest extends AbstractXtextTests {
 		operation.name = "off"
 		operation.description = "Turn off switch"
 		
-		val returnPrimitiveType = FunctionblockFactory.eINSTANCE.createReturnPrimitiveType
-		returnPrimitiveType.returnType = PrimitiveType.BYTE
+		val returnPrimitiveType = FunctionblockFactory.eINSTANCE.createReturnType
+		var primi = DatatypeFactory.eINSTANCE.createPrimitivePropertyType();
+		primi.setType(PrimitiveType.BYTE);
+		returnPrimitiveType.type = primi
 		returnPrimitiveType.multiplicity = false;
 		val constraintRule = DatatypeFactory.eINSTANCE.createConstraintRule
 		
@@ -209,8 +221,10 @@ class FbConstraintParametersValidationTest extends AbstractXtextTests {
 		operation.name = "off"
 		operation.description = "Turn off switch"
 		
-		val param1 = FunctionblockFactory.eINSTANCE.createPrimitiveParam
-		param1.type = PrimitiveType.INT
+		val param1 = FunctionblockFactory.eINSTANCE.createParam
+		var primi = DatatypeFactory.eINSTANCE.createPrimitivePropertyType();
+		primi.setType(PrimitiveType.INT);
+		param1.type = primi
 		operation.params.add(param1)
 		
 		val constraintRule = DatatypeFactory.eINSTANCE.createConstraintRule
@@ -234,8 +248,10 @@ class FbConstraintParametersValidationTest extends AbstractXtextTests {
 		operation.name = "off"
 		operation.description = "Turn off switch"
 		
-		val param1 = FunctionblockFactory.eINSTANCE.createPrimitiveParam
-		param1.type = PrimitiveType.STRING
+		val param1 = FunctionblockFactory.eINSTANCE.createParam
+		var primi = DatatypeFactory.eINSTANCE.createPrimitivePropertyType();
+		primi.setType(PrimitiveType.STRING);
+		param1.type = primi
 		operation.params.add(param1)
 		
 		val constraintRule = DatatypeFactory.eINSTANCE.createConstraintRule

@@ -18,16 +18,15 @@ import org.eclipse.vorto.core.api.model.datatype.Property
 import org.eclipse.vorto.core.api.model.datatype.PrimitivePropertyType
 import org.eclipse.vorto.core.api.model.datatype.ObjectPropertyType
 import org.eclipse.vorto.core.api.model.functionblock.ReturnType
-import org.eclipse.vorto.core.api.model.functionblock.ReturnPrimitiveType
-import org.eclipse.vorto.core.api.model.functionblock.ReturnObjectType
+
 
 class Utils {
-	def static String getReturnType(ReturnType type) {
-		if (type instanceof ReturnPrimitiveType) {
-			return (type as ReturnPrimitiveType).returnType.getName();
+	def static String getReturnType(ReturnType returnType) {
+		if (returnType.type instanceof PrimitivePropertyType) {
+			return (returnType.type as PrimitivePropertyType).type.getName();
 		}
-		else if (type instanceof ReturnObjectType) {
-			return (type as ReturnObjectType).returnType.name
+		else if (returnType instanceof ObjectPropertyType) {
+			return (returnType as ObjectPropertyType).type.name
 		}
 	}
 	

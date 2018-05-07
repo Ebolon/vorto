@@ -17,9 +17,9 @@ package org.eclipse.vorto.codegen.coap.client.templates
 import org.eclipse.vorto.codegen.api.ITemplate
 import org.eclipse.vorto.codegen.api.InvocationContext
 import org.eclipse.vorto.codegen.coap.CoAPUtils
+import org.eclipse.vorto.core.api.model.datatype.ObjectPropertyType
 import org.eclipse.vorto.core.api.model.functionblock.Operation
 import org.eclipse.vorto.core.api.model.functionblock.Param
-import org.eclipse.vorto.core.api.model.functionblock.ReturnObjectType
 
 class CoAPClientOperationTemplate implements ITemplate<Operation>{
 	
@@ -42,7 +42,7 @@ class CoAPClientOperationTemplate implements ITemplate<Operation>{
 			/**
 			* «op.description»
 			*/
-			«IF (op.returnType instanceof ReturnObjectType || op.returnType == null)»
+			«IF (op.returnType.type instanceof ObjectPropertyType || op.returnType == null)»
 			public «CoAPUtils.getReturnTypeAsString(op)» «op.name»(«getParameterString(op,invocationContext)») {
 			«ELSE»
 			public «CoAPUtils.getReturnTypeAsString(op)» «op.name»(«getParameterString(op,invocationContext)») throws Exception {
@@ -72,7 +72,7 @@ class CoAPClientOperationTemplate implements ITemplate<Operation>{
 				if(response != null) {
 					if(response.getCode().value < 100) {
 						if(response.getPayloadSize() > 0) {
-							«IF (op.returnType instanceof ReturnObjectType) »
+							«IF (op.returnType.type instanceof ObjectPropertyType) »
 								«var String returnType = CoAPUtils.getReturnTypeAsString(op)»
 								final Object o = Client.deserializePayload(«returnType».class, response.getPayload());
 								if(o instanceof «returnType»){
@@ -88,7 +88,7 @@ class CoAPClientOperationTemplate implements ITemplate<Operation>{
 						}
 					}
 				}
-				«IF op.returnType instanceof ReturnObjectType»
+				«IF op.returnType.type instanceof ObjectPropertyType»
 					return null;
 				«ELSE»
 					throw new Exception("Request failed!");

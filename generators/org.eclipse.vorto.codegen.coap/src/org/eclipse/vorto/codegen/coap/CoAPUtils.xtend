@@ -21,8 +21,6 @@ import org.eclipse.emf.common.util.EList
 import org.eclipse.emf.common.util.BasicEMap
 import org.eclipse.emf.common.util.BasicEList
 import org.eclipse.vorto.core.api.model.functionblock.Operation
-import org.eclipse.vorto.core.api.model.functionblock.ReturnObjectType
-import org.eclipse.vorto.core.api.model.functionblock.ReturnPrimitiveType
 import org.eclipse.vorto.core.api.model.datatype.Property
 import org.eclipse.vorto.core.api.model.datatype.PrimitivePropertyType
 import org.eclipse.vorto.core.api.model.datatype.ObjectPropertyType
@@ -32,8 +30,6 @@ import org.eclipse.vorto.core.api.model.datatype.Entity
 import org.eclipse.vorto.core.api.model.datatype.Enum
 import org.eclipse.vorto.core.api.model.functionblock.ReturnType
 import org.eclipse.vorto.core.api.model.functionblock.Param
-import org.eclipse.vorto.core.api.model.functionblock.PrimitiveParam
-import org.eclipse.vorto.core.api.model.functionblock.RefParam
 
 class CoAPUtils {
 		
@@ -42,10 +38,10 @@ class CoAPUtils {
 	 * Returns the parameter as string
 	 */
 	 def public static String getParameterTypeAsString(Param parameter) {
-		if(parameter instanceof PrimitiveParam){
-			return ValueMapper.mapSimpleDatatype( (parameter as PrimitiveParam).type as PrimitiveType);
-		} else if (parameter instanceof RefParam){
-			var RefParam object = parameter as RefParam;
+		if(parameter.type instanceof PrimitivePropertyType){
+			return ValueMapper.mapSimpleDatatype( (parameter.type as PrimitivePropertyType).type as PrimitiveType);
+		} else if (parameter.type instanceof ObjectPropertyType){
+			var ObjectPropertyType object = parameter.type as ObjectPropertyType;
 			if(object.type instanceof Entity){
 				return (object.type as Entity).name.toFirstUpper;
 			} else if(object.type instanceof Enum){
@@ -76,10 +72,10 @@ class CoAPUtils {
 	def public static String getReturnTypeAsString(Operation op) {
 		if(op.returnType != null){
 			var returnType = op.returnType;
-			if(returnType instanceof ReturnObjectType){
-				return (returnType as ReturnObjectType).returnType.name;
-			} else if (returnType instanceof ReturnPrimitiveType){
-				return (returnType as ReturnPrimitiveType).returnType.getName();
+			if(returnType.type instanceof ObjectPropertyType){
+				return (returnType as ObjectPropertyType).type.name;
+			} else if (returnType.type instanceof PrimitivePropertyType){
+				return (returnType.type as ObjectPropertyType).type.getName();
 			}
 		} else {
 			return "void";
@@ -90,9 +86,9 @@ class CoAPUtils {
 	 * Returns the name of the return type or 'returnValue' as string
 	 */
 	def public static String getReturnNameAsString(ReturnType returnType) {
-		if(returnType instanceof ReturnObjectType){
-			return (returnType as ReturnObjectType).returnType.name.toFirstLower;
-		} else if (returnType instanceof ReturnPrimitiveType){
+		if(returnType.type instanceof ObjectPropertyType){
+			return (returnType.type as ObjectPropertyType).type.name.toFirstLower;
+		} else if (returnType.type instanceof PrimitivePropertyType){
 			return "returnValue";
 		}
 	}

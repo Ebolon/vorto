@@ -203,10 +203,10 @@ class FbValidatorTest extends AbstractXtextTests {
 		
 		var operation = getFBFactoryInstance().createOperation();
 		
-		var param1= getFBFactoryInstance().createPrimitiveParam()
+		var param1= getFBFactoryInstance().createParam();
 		param1.name = "ABB";
 		
-		var param2= getFBFactoryInstance().createPrimitiveParam();
+		var param2= getFBFactoryInstance().createParam();
 		param2.name = "ABB";
 
 		operation.getParams().add(param1);

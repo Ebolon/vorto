@@ -75,30 +75,14 @@ Operation :
 	 (presence = Presence)? (breakable ?= 'breakable')? name=ID '(' (params += Param (',' params+=Param)*)?')' ('returns'  returnType = ReturnType)? (description=STRING)?
 ;
 
-ReturnType :
-	ReturnObjectType | ReturnPrimitiveType
-;
-
-ReturnObjectType :
-	 (multiplicity ?= 'multiple')? returnType = [datatype::Type | QualifiedName]
-;
-
-ReturnPrimitiveType :
-	 (multiplicity ?= 'multiple')? returnType = PrimitiveType ('<' constraintRule = ConstraintRule '>')?
-;
-
-PrimitiveParam:
-	(multiplicity ?= 'multiple')? name = ID 'as' type = PrimitiveType ('<' constraintRule = ConstraintRule '>')?  (description=STRING)?
-;
-
-RefParam:
-	(multiplicity ?= 'multiple')? name = ID 'as' type = [datatype::Type|QualifiedName] (description=STRING)?
+ReturnType:
+	 (multiplicity ?= 'multiple')? type = [datatype::PropertyType] ('<' constraintRule = ConstraintRule '>')?
 ;
 
 Param:
-    PrimitiveParam | RefParam
+	(multiplicity ?= 'multiple')? name = ID 'as' type = [datatype::PropertyType] ('<' constraintRule = ConstraintRule '>')?  (description=STRING)?
 ;
- 
+
 Event:
 	 name = ID '{'
 		(properties += Property)*
