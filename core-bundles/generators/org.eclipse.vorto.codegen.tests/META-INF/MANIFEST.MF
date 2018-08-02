@@ -1,0 +1,25 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Vorto Code-Generation Infrastructure (Incubation)
+Bundle-SymbolicName: org.eclipse.vorto.codegen.tests;singleton:=true
+Bundle-Version: 0.10.0.qualifier
+Bundle-Vendor: Eclipse.org/Vorto
+Require-Bundle: com.google.guava,
+ org.eclipse.xtext.xbase.lib,
+ org.eclipse.xtend.lib,
+ org.eclipse.xtend.lib.macro,
+ org.apache.commons.io,
+ org.eclipse.vorto.core,
+ org.eclipse.emf.mwe.utils;resolution:=optional,
+ org.eclipse.emf.mwe2.launch;resolution:=optional,
+ org.eclipse.vorto.codegen
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-ActivationPolicy: lazy
+Bundle-ClassPath: .
+Import-Package: org.eclipse.emf.common.util,
+ org.eclipse.emf.mwe.internal.core.ast.util,
+ org.eclipse.vorto.editor.datatype,
+ org.eclipse.vorto.editor.functionblock,
+ org.eclipse.xtext.resource,
+ org.junit;version="4.12.0"
+Automatic-Module-Name: org.eclipse.vorto.codegen.tests
