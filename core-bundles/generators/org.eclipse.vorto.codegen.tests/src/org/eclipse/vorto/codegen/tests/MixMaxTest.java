@@ -36,43 +36,42 @@ import org.junit.Test;
 
 public class MixMaxTest extends InheritanceHelperTest {
 
-	final String FBA =
-			"namespace org.eclipse.vorto.test\n" + 
-			"version 1.0.0\n" + 
-			"displayname \"FunctionBlockA\"\n" + 
-			"functionblock FunctionBlockA {\n" + 
-			"	status {\n" + 
-			"		value as int <{CONSTRAINTS}>\n" + 
-			"	}\n" + 
-			"}";
-	
-	final String FBB = 
-			"namespace org.eclipse.vorto.test\n" + 
-			"version 1.0.0\n" + 
-			"displayname \"FunctionBlockB\"\n" + 
-			"using org.eclipse.vorto.test.FunctionBlockA ; 1.0.0\n" + 
-			"functionblock FunctionBlockB extends FunctionBlockA {\n" + 
-			"	status {\n" + 
-			"		value as int <{CONSTRAINTS}>\n" + 
-			"	}\n" + 
-			"}\n";
-	
+	final String FBA = "namespace org.eclipse.vorto.test\n" + "version 1.0.0\n" + "displayname \"FunctionBlockA\"\n"
+			+ "functionblock FunctionBlockA {\n" + "	status {\n" + "		value as int <{CONSTRAINTS}>\n" + "	}\n"
+			+ "}";
+
+	final String FBB = "namespace org.eclipse.vorto.test\n" + "version 1.0.0\n" + "displayname \"FunctionBlockB\"\n"
+			+ "using org.eclipse.vorto.test.FunctionBlockA ; 1.0.0\n"
+			+ "functionblock FunctionBlockB extends FunctionBlockA {\n" + "	status {\n"
+			+ "		value as int <{CONSTRAINTS}>\n" + "	}\n" + "}\n";
+
 	final String PLACEHOLDER = "{CONSTRAINTS}";
-	
-	
+
 	@Test
 	public void overrideMinConstraint() {
+		List<String> resourceStrings = Arrays.asList(FBB.replace(PLACEHOLDER, "MIN 0"),
+				FBA.replace(PLACEHOLDER, "MIN -10"));
 
-		
-		List<String> resourceStrings = Arrays.asList(FBB.replace(, newChar), FBA);
-		
 		FunctionblockModel functionBlockModel = loadFunctionBlockModel(resourceStrings);
 		InheritanceHelper inHelper = new InheritanceHelper();
 		System.out.println("abc" + functionBlockModel.getName());
 		EList<Property> joinStatusProperties = inHelper.joinStatusProperties(functionBlockModel);
 		ConstraintRule constraintRule = joinStatusProperties.get(0).getConstraintRule();
 		EList<Constraint> constraints = constraintRule.getConstraints();
-		assertEquals(constraints.get(0).getConstraintValues(), "0");
-		assertEquals(constraints.get(1).getConstraintValues(), "10");
+		assertEquals("0", constraints.get(0).getConstraintValues());
+	}
+
+	@Test
+	public void keepMinConstraint() {
+		List<String> resourceStrings = Arrays.asList(FBB.replace(PLACEHOLDER, ""),
+				FBA.replace(PLACEHOLDER, "MIN -10"));
+
+		FunctionblockModel functionBlockModel = loadFunctionBlockModel(resourceStrings);
+		InheritanceHelper inHelper = new InheritanceHelper();
+		System.out.println("abc" + functionBlockModel.getName());
+		EList<Property> joinStatusProperties = inHelper.joinStatusProperties(functionBlockModel);
+		ConstraintRule constraintRule = joinStatusProperties.get(0).getConstraintRule();
+		EList<Constraint> constraints = constraintRule.getConstraints();
+		assertEquals("-10", constraints.get(0).getConstraintValues());
 	}
 }
